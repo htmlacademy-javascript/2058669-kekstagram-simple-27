@@ -1,8 +1,3 @@
-const previewImg = document.querySelector('.img-upload__preview img');
-const form = document.querySelector('.img-upload__form');
-const sliderElement = document.querySelector('.effect-level__slider');
-const effectLevel = document.querySelector('.effect-level__value');
-
 const EFFECTS = [
   {
     name: 'none',
@@ -53,22 +48,31 @@ const EFFECTS = [
 ];
 
 const DEFAULT_EFFECT = EFFECTS[0];
-let chosenEffect = DEFAULT_EFFECT;
 
-const isDefault = () => chosenEffect === DEFAULT_EFFECT;
+const previewImg = document.querySelector('.img-upload__preview img');
+const form = document.querySelector('.img-upload__form');
+const sliderElement = document.querySelector('.effect-level__slider');
+const effectLevel = document.querySelector('.effect-level__value');
+const sliderSubsrate = document.querySelector('.img-upload__effect-level');
+
+let currentEffect = DEFAULT_EFFECT;
+
+const isDefault = () => currentEffect === DEFAULT_EFFECT;
 
 const updateSlider = () => {
   sliderElement.classList.remove('hidden');
+  sliderSubsrate.classList.remove('hidden');
   sliderElement.noUiSlider.updateOptions({
     range: {
-      min: chosenEffect.min,
-      max: chosenEffect.max,
+      min: currentEffect.min,
+      max: currentEffect.max,
     },
-    step: chosenEffect.step,
-    start: chosenEffect.max,
+    step: currentEffect.step,
+    start: currentEffect.max,
   });
 
   if(isDefault()) {
+    sliderSubsrate.classList.add('hidden');
     sliderElement.classList.add('hidden');
   }
 };
@@ -77,7 +81,7 @@ const onFormChange = (evt) => {
   if(!evt.target.classList.contains('effects__radio')) {
     return;
   }
-  chosenEffect = EFFECTS.find((effect) => effect.name === evt.target.value);
+  currentEffect = EFFECTS.find((effect) => effect.name === evt.target.value);
   updateSlider();
 };
 
@@ -89,13 +93,13 @@ const onSliderUpdate = () => {
     return;
   }
   const sliderValue = sliderElement.noUiSlider.get();
-  previewImg.style.filter = `${chosenEffect.style}(${sliderValue}${chosenEffect.unit})`;
-  previewImg.classList.add(`effects__preview--${chosenEffect.name}`);
+  previewImg.style.filter = `${currentEffect.style}(${sliderValue}${currentEffect.unit})`;
+  previewImg.classList.add(`effects__preview--${currentEffect.name}`);
   effectLevel.value = sliderValue;
 };
 
 const resetEffect = () => {
-  chosenEffect = DEFAULT_EFFECT;
+  currentEffect = DEFAULT_EFFECT;
   updateSlider();
 };
 
