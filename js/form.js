@@ -1,5 +1,8 @@
 import { resetScale } from './scale.js';
 import { resetEffect } from './effect.js';
+import { sendData } from './api.js';
+import { showErrorMessage } from './messages.js';
+import { showSuccessMessage } from './messages.js';
 
 const form = document.querySelector('.img-upload__form');
 const fileField = form.querySelector('#upload-file');
@@ -7,6 +10,7 @@ const body = document.querySelector('body');
 const overlay = form.querySelector('.img-upload__overlay');
 const buttonCancel = form.querySelector('#upload-cancel');
 const commentField = form.querySelector('.text__description');
+const submitButton = form.querySelector('.img-upload__submit');
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__text',
@@ -51,12 +55,41 @@ const onFileInputChange = () => {
   openModal();
 };
 
-const onForm = (evt) => {
-  const isValid = pristine.validate();
-  if(!isValid){
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Публикую...';
+};
+
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+};
+
+const setUserFormSubmit = (onSuccess) => {
+  form.addEventListener('submit', (evt) => {
     evt.preventDefault();
-  }
+
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          onSuccess();
+          unblockSubmitButton();
+          showSuccessMessage();
+        },
+        () => {
+          showErrorMessage();
+          unblockSubmitButton();
+        },
+        new FormData(evt.target),
+      );
+    }
+  });
 };
 
 fileField.addEventListener('change', onFileInputChange);
-form.addEventListener('submit', onForm);
+
+export {setUserFormSubmit};
+
+export {closeModal, openModal};
