@@ -9,7 +9,7 @@ const createPicture = (data) => {
 
   picture.querySelector('.picture__img').src = url;
   picture.querySelector('.picture__img').alt = description;
-  picture.querySelector('.picture__comments').textContent = comments.length;
+  picture.querySelector('.picture__comments').textContent = comments;
   picture.querySelector('.picture__likes').textContent = likes;
 
   return picture;
