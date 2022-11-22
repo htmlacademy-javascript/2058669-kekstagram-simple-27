@@ -3,6 +3,7 @@ import { resetEffect } from './effect.js';
 import { sendData } from './api.js';
 import { showErrorMessage } from './messages.js';
 import { showSuccessMessage } from './messages.js';
+import { isEscEvent } from './util.js';
 
 const form = document.querySelector('.img-upload__form');
 const fileField = form.querySelector('#upload-file');
@@ -34,7 +35,7 @@ const isTextFieldFocused = () =>
   document.activeElement === commentField;
 
 function onEscKeyDown(evt) {
-  if(evt.key === 'Escape' && !isTextFieldFocused()){
+  if(isEscEvent(evt) && !isTextFieldFocused()){
     evt.preventDefault();
     closeModal();
   }
@@ -93,3 +94,5 @@ fileField.addEventListener('change', onFileInputChange);
 export {setUserFormSubmit};
 
 export {closeModal, openModal};
+
+export {onEscKeyDown};
